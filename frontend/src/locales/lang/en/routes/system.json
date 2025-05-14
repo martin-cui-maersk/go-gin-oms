@@ -1,0 +1,15 @@
+{
+  "moduleName": "System Admin",
+
+  "menu": "Menu",
+  "role": "Role",
+  "user": "User",
+  "userDetail": "User Detail",
+  "merchant": "Merchant",
+  "store": "Store",
+
+  "myAccount": "My Account",
+  "selectMerchant": "Select Merchant",
+  "changePassword": "Change Password",
+  "myProfile": "My Profile"
+}

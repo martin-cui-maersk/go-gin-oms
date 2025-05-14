@@ -1,0 +1,13 @@
+{
+  "moduleName": "系统管理",
+  "password": "修改密码",
+  "menu": "菜单管理",
+  "merchant": "商户管理",
+  "store": "店铺管理",
+  "user": "用户管理",
+  "role": "角色管理",
+  "myAccount": "我的账户",
+  "selectMerchant": "切换商户",
+  "changePassword": "修改密码",
+  "myProfile": "个人资料"
+}

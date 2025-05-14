@@ -1,0 +1,33 @@
+{
+  "basicSetting": "Basic Setting",
+  "email": "Email",
+  "userName": "User Name",
+  "introduction": "Introduction",
+  "mobile": "Mobile Phone",
+  "avatar": "Avatar",
+  "changeAvatar": "Change Avatar",
+  "updateBasicInfo": "Update Basic Info",
+
+  "secureSetting": "Secure Setting",
+  "accountBind": "Account Bind",
+  "msgNotify": "Notify Setting",
+
+  "changePassword": "Change the current user's password",
+  "changePasswordDesc": "After successful modification, you will be automatically logged out!",
+  "oldPassword": "Current Password",
+  "oldPasswordTip": "Please Enter Current Password",
+  "newPassword": "New Password",
+  "newPasswordTip": "Please Enter New Password",
+  "newPasswordConfirm": "Confirm Password",
+  "passwordRequired": "Password Required",
+  "passwordNotMatch": "The two password inputs do not match!",
+  "resetPassword": "Reset",
+  "submitPassword": "Confirm",
+  "passwordChangeSuccessfully": "Password change successfully",
+  "passwordChangeFailed": "Password change failed",
+
+  "merchant": {
+    "tip" : "Reminder",
+    "confirmMessage": "Confirm to change this merchant?"
+  }
+}

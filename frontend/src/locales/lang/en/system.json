@@ -1,0 +1,64 @@
+{
+  "menu": {
+    "menuList": "Menu List",
+    "menuName": "Menu Name",
+    "icon": "Icon",
+    "type": "Type",
+    "permissionCode": "Permission Code",
+    "routePath": "Route Path",
+    "apiPath": "API Path",
+    "component": "Component",
+    "sort": "Sort",
+    "typeDir": "Dir",
+    "typeMenu": "Menu",
+    "typeButton": "Button",
+    "addMenu": "Add Menu",
+    "editMenu": "Edit Menu",
+    "langPack": "Language Pack",
+    "parentMenu": "Parent Menu",
+    "currentActiveMenu": "Active Menu",
+    "redirect": "Redirect",
+    "": ""
+  },
+  "role": {
+    "roleList": "Role List",
+    "roleName": "Role Name",
+    "roleCode": "Role Code",
+    "addRole": "Add Role",
+    "editRole": "Edit Role",
+    "assignMenu": "Assign Menu",
+    "": ""
+  },
+  "user": {
+    "userList": "User List",
+    "userName": "User Name",
+    "email": "Email",
+    "role": "Role",
+    "addUser": "Add User",
+    "editUser": "Edit User",
+    "exportUser": "Export User",
+    "assignStore": "Assign Store",
+    "": ""
+  },
+  "merchant": {
+    "merchantList": "Merchant List",
+    "merchantName": "Merchant Name",
+    "merchantCode": "Merchant Code",
+    "email": "Email",
+    "contact": "Contact",
+    "addMerchant": "Add Merchant",
+    "editMerchant": "Edit Merchant",
+    "": ""
+  },
+  "store": {
+    "storeList": "Store List",
+    "storeName": "Store Name",
+    "storeCode": "Storer Key",
+    "shopId": "Shop Id",
+    "platform": "Platform",
+    "merchant": "Merchant",
+    "addStore": "Add Store",
+    "editStore": "Edit Store",
+    "": ""
+  }
+}

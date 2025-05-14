@@ -1,0 +1,64 @@
+{
+  "menu": {
+    "menuList": "菜单列表",
+    "menuName": "菜单名称",
+    "icon": "图标",
+    "type": "类型",
+    "permissionCode": "权限标识",
+    "routePath": "路由地址",
+    "apiPath": "接口地址",
+    "component": "组件",
+    "sort": "排序",
+    "addMenu": "新增菜单",
+    "editMenu": "编辑菜单",
+    "typeDir": "目录",
+    "typeMenu": "菜单",
+    "typeButton": "按钮",
+    "langPack": "语言包",
+    "parentMenu": "上级菜单",
+    "currentActiveMenu": "高亮菜单",
+    "redirect": "跳转路径",
+    "": ""
+  },
+  "role": {
+    "roleList": "角色列表",
+    "roleName": "角色名称",
+    "roleCode": "角色Code",
+    "addRole": "添加角色",
+    "editRole": "编辑角色",
+    "assignMenu": "分配菜单",
+    "": ""
+  },
+  "user": {
+    "userList": "用户列表",
+    "userName": "用户名",
+    "email": "邮箱",
+    "role": "角色",
+    "addUser": "新增用户",
+    "editUser": "编辑用户",
+    "exportUser": "导出用户",
+    "assignStore": "分配店铺",
+    "": ""
+  },
+  "merchant": {
+    "merchantList": "商户列表",
+    "merchantName": "商户名称",
+    "merchantCode": "商户Code",
+    "email": "邮箱",
+    "contact": "联系人",
+    "addMerchant": "新增商户",
+    "editMerchant": "编辑商户",
+    "": ""
+  },
+  "store": {
+    "storeList": "店铺列表",
+    "storeName": "店铺名称",
+    "storeCode": "Storer Key",
+    "shopId": "Shop Id",
+    "platform": "平台",
+    "merchant": "商户",
+    "addStore": "新增店铺",
+    "editStore": "编辑店铺",
+    "": ""
+  }
+}

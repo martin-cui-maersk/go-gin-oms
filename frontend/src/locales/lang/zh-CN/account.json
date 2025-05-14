@@ -1,0 +1,33 @@
+{
+  "basicSetting": "基本设置",
+  "email": "邮箱",
+  "userName": "用户名",
+  "introduction": "个人简介",
+  "mobile": "联系电话",
+  "avatar": "头像",
+  "changeAvatar": "更换头像",
+  "updateBasicInfo": "更新基本信息",
+
+  "secureSetting": "安全设置",
+  "accountBind": "账户绑定",
+  "msgNotify": "通知设置",
+
+  "changePassword": "修改当前用户密码",
+  "changePasswordDesc": "修改成功后会自动退出当前登录！",
+  "oldPassword": "当前密码",
+  "oldPasswordTip": "请输入当前密码",
+  "newPassword": "新密码",
+  "newPasswordTip": "请输入新密码",
+  "newPasswordConfirm": "确认密码",
+  "passwordRequired": "密码不能为空",
+  "passwordNotMatch": "两次密码输入不一致！",
+  "resetPassword": "重置",
+  "submitPassword": "确认",
+  "passwordChangeSuccessfully": "密码修改成功",
+  "passwordChangeFailed": "密码修改失败",
+
+  "merchant": {
+    "tip" : "温馨提醒",
+    "confirmMessage": "确认切换商户吗?"
+  }
+}

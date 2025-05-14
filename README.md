@@ -1,1 +1,1 @@
-# go-gin-admin
+# go-gin-jwt
