@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"go-gin-oms/server/global"
 	models "go-gin-oms/server/models/common"
 	"go-gin-oms/server/utils/token"
 	"golang.org/x/crypto/bcrypt"
@@ -32,7 +33,7 @@ func (*SysUser) TableName() string {
 }
 
 func (u *SysUser) SaveUser() (*SysUser, error) {
-	err := DB.Create(&u).Error
+	err := global.DB.Create(&u).Error
 	if err != nil {
 		return &SysUser{}, err
 	}
@@ -61,9 +62,9 @@ func LoginCheck(username, password string) (string, error) {
 	// 邮箱正则表达式（支持大多数常见格式）
 	emailRegex := regexp.MustCompile(`^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$`)
 	if emailRegex.MatchString(username) {
-		err = DB.Model(SysUser{}).Where("email = ?", username).Take(&u).Error
+		err = global.DB.Model(SysUser{}).Where("email = ?", username).Take(&u).Error
 	} else {
-		err = DB.Model(SysUser{}).Where("user_name = ?", username).Take(&u).Error
+		err = global.DB.Model(SysUser{}).Where("user_name = ?", username).Take(&u).Error
 	}
 
 	if err != nil {
@@ -90,7 +91,7 @@ func (u *SysUser) PrepareGive() {
 // GetUserInfoByID 通过ID获取用户信息
 func GetUserInfoByID(uid uint) (SysUser, error) {
 	var u SysUser
-	if err := DB.First(&u, uid).Error; err != nil {
+	if err := global.DB.First(&u, uid).Error; err != nil {
 		return u, errors.New("user not found")
 	}
 
@@ -144,13 +145,13 @@ func GetRoleMenu(roleId uint) []MenuData {
 	//	selectedRoleMenuIds = append(selectedRoleMenuIds, row.MenuId)
 	//}
 	var selectedRoleMenuIds []uint
-	err := DB.Model(&SysRoleMenu{}).Where("role_id = ?", roleId).Pluck("menu_id", &selectedRoleMenuIds)
+	err := global.DB.Model(&SysRoleMenu{}).Where("role_id = ?", roleId).Pluck("menu_id", &selectedRoleMenuIds)
 	if err.Error != nil {
 		panic("查询失败: " + err.Error.Error())
 	}
 	allMyMenuIds := getParentMenuIds(selectedRoleMenuIds)
 	var roleMenuData []SysMenu
-	err = DB.Where(" menu_id in ? and status = ? and is_active = ?", allMyMenuIds, 1, 1).Find(&roleMenuData)
+	err = global.DB.Where(" menu_id in ? and status = ? and is_active = ?", allMyMenuIds, 1, 1).Order("sort desc").Find(&roleMenuData)
 	// 检查错误
 	if err.Error != nil {
 		panic("查询失败: " + err.Error.Error())
@@ -162,7 +163,7 @@ func GetRoleMenu(roleId uint) []MenuData {
 func getParentMenuIds(selectedRoleMenuIds []uint) []uint {
 	var allMenuIds []uint
 	var result []map[string]interface{}
-	err := DB.Model(&SysMenu{}).Where("menu_id in ?", selectedRoleMenuIds).Select("menu_id", "parent_id").Find(&result)
+	err := global.DB.Model(&SysMenu{}).Where("menu_id in ?", selectedRoleMenuIds).Select("menu_id", "parent_id").Find(&result)
 	if err.Error != nil {
 		panic("查询失败: " + err.Error.Error())
 	}

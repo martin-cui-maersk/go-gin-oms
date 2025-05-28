@@ -1,4 +1,4 @@
-package global
+package result
 
 import (
 	"github.com/gin-gonic/gin"
@@ -14,10 +14,6 @@ type Builder struct {
 
 type Result struct {
 	Ctx *gin.Context
-}
-
-func NewSysError(c *gin.Context) {
-	NewResult().SetCode(500).SetMsg("System busy, please try again later!").Build(c)
 }
 
 func NewResult() *Builder {

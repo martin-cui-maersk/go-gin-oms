@@ -1,14 +1,16 @@
 package main
 
 import (
-	"go-gin-oms/server/models"
+	"go-gin-oms/server/core"
 	"go-gin-oms/server/routes"
 	"os"
 )
 
 func init() {
-	// 初始化DB连接
-	models.ConnectDB()
+	// 初始化Zap日志记录器
+
+	// 初始化数据库
+	core.ConnectDB()
 }
 
 func main() {
