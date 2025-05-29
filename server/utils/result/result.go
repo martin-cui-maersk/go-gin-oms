@@ -16,7 +16,7 @@ type Result struct {
 	Ctx *gin.Context
 }
 
-func NewResult() *Builder {
+func Response() *Builder {
 	return &Builder{
 		Code: 200,
 		Msg:  "Success",

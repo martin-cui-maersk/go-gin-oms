@@ -27,7 +27,7 @@ func Register(c *gin.Context) {
 		//c.JSON(http.StatusBadRequest, gin.H{
 		//	"data": err.Error(),
 		//})
-		result.NewResult().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
+		result.Response().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
 		return
 	}
 
@@ -41,14 +41,14 @@ func Register(c *gin.Context) {
 		//c.JSON(http.StatusBadRequest, gin.H{
 		//	"data": err.Error(),
 		//})
-		result.NewResult().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
+		result.Response().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
 		return
 	}
 	//c.JSON(http.StatusOK, gin.H{
 	//	"message": "register success",
 	//	"data":    req,
 	//})
-	result.NewResult().SetCode(200).SetMsg("register success").SetData(req).Build(c)
+	result.Response().SetCode(200).SetMsg("register success").SetData(req).Build(c)
 }
 
 func Login(c *gin.Context) {
@@ -56,10 +56,10 @@ func Login(c *gin.Context) {
 	if err := c.ShouldBindBodyWithJSON(&req); err != nil {
 		//c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		if err.Error() == "EOF" {
-			result.NewResult().SetCode(403).SetMsg("params cannot be empty").SetData(nil).Build(c)
+			result.Response().SetCode(403).SetMsg("params cannot be empty").SetData(nil).Build(c)
 			return
 		}
-		result.NewResult().SetCode(503).SetMsg(err.Error()).Build(c)
+		result.Response().SetCode(503).SetMsg(err.Error()).Build(c)
 		return
 	}
 
@@ -73,14 +73,14 @@ func Login(c *gin.Context) {
 		//c.JSON(http.StatusBadRequest, gin.H{
 		//	"error": "account or password is incorrect.",
 		//})
-		//result.NewResult().SetCode(503).SetMsg("account or password is incorrect.").Build(c)
-		result.NewResult().SetCode(503).SetMsg(err.Error()).Build(c)
+		//result.Response().SetCode(503).SetMsg("account or password is incorrect.").Build(c)
+		result.Response().SetCode(503).SetMsg(err.Error()).Build(c)
 		return
 	}
 	//c.JSON(http.StatusOK, gin.H{
 	//	"token": token,
 	//})
-	result.NewResult().SetData(map[string]string{"token": token}).Build(c)
+	result.Response().SetData(map[string]string{"token": token}).Build(c)
 }
 
 func CurrentUserInfo(c *gin.Context) {
@@ -90,7 +90,7 @@ func CurrentUserInfo(c *gin.Context) {
 		//c.JSON(http.StatusBadRequest, gin.H{
 		//	"error": err.Error(),
 		//})
-		result.NewResult().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
+		result.Response().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
 		return
 	}
 
@@ -100,7 +100,7 @@ func CurrentUserInfo(c *gin.Context) {
 		//c.JSON(http.StatusBadRequest, gin.H{
 		//	"error": err.Error(),
 		//})
-		result.NewResult().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
+		result.Response().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
 		return
 	}
 
@@ -108,7 +108,7 @@ func CurrentUserInfo(c *gin.Context) {
 	//	"message": "success",
 	//	"data":    u,
 	//})
-	result.NewResult().SetData(u).Build(c)
+	result.Response().SetData(u).Build(c)
 }
 
 func GetMyMenuList(c *gin.Context) {
@@ -119,15 +119,15 @@ func GetMyMenuList(c *gin.Context) {
 		//c.JSON(http.StatusBadRequest, gin.H{
 		//	"error": err.Error(),
 		//})
-		result.NewResult().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
+		result.Response().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
 		return
 	}
 	userInfo, err := models.GetUserInfoByID(userId)
 	if err != nil {
-		result.NewResult().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
+		result.Response().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
 		return
 	}
 	fmt.Println("RoleId", userInfo.RoleId)
 	results := models.GetRoleMenu(userInfo.RoleId)
-	result.NewResult().SetData(results).Build(c)
+	result.Response().SetData(results).Build(c)
 }

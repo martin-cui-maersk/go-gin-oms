@@ -5,25 +5,34 @@ import (
 	"github.com/gin-gonic/gin"
 	v1User "go-gin-oms/server/api/v1/user"
 	"go-gin-oms/server/global"
-	"go-gin-oms/server/middlewares"
+	"go-gin-oms/server/middleware"
 	"net/http"
 	"runtime/debug"
 	"time"
 )
 
 func Routes() *gin.Engine {
-	r := gin.Default()
+	// 创建Gin引擎
+	r := gin.New()
 
-	// 日志中间件
-	r.Use(middlewares.LoggerMiddleware(global.ZapLogger))
+	// 处理发生异常
+	r.Use(Recover)
 
 	//处理找不到路由
 	r.NoRoute(HandleNotFound)
 	r.NoMethod(HandleNotFound)
 
-	// 处理发生异常
-	r.Use(Recover)
+	// 日志中间件
+	r.Use(middleware.LoggerMiddleware(global.AccessLogger,
+		middleware.WithSkipPaths([]string{"/health", "/favicon.ico"}),
+		middleware.WithMaxBodySize(2048, 2048),
+	))
 
+	r.GET("/health", func(c *gin.Context) {
+		c.String(http.StatusOK, "OK")
+	})
+
+	// 路由
 	api := r.Group("/api")
 	{
 		omsApp := api.Group("/oms-app/v1")
@@ -37,7 +46,7 @@ func Routes() *gin.Engine {
 			// protected路由
 			protected := omsApp.Group("/")
 			{
-				protected.Use(middlewares.JwtAuthMiddleware())
+				protected.Use(middleware.JwtAuthMiddleware())
 				userGroup := protected.Group("/user")
 				{
 					userGroup.GET("/info", v1User.CurrentUserInfo)

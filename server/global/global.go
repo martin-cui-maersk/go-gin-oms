@@ -5,5 +5,8 @@ import (
 	"gorm.io/gorm"
 )
 
-var ZapLogger *zap.Logger
-var DB *gorm.DB
+var (
+	DB           *gorm.DB
+	AccessLogger *zap.Logger
+	AppLogger    *zap.Logger
+)
