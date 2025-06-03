@@ -3,9 +3,7 @@ package main
 import (
 	"go-gin-oms/server/core"
 	"go-gin-oms/server/global"
-	"go-gin-oms/server/routes"
-	"go.uber.org/zap"
-	"os"
+	"go-gin-oms/server/router"
 )
 
 func init() {
@@ -13,14 +11,11 @@ func init() {
 	global.AccessLogger, global.AppLogger = core.InitLogger()
 	// 初始化数据库
 	global.DB = core.ConnectDB()
+	// 初始化Redis
+	// TODO::初始化Redis
 }
 
 func main() {
 	// 启动路由
-	r := routes.Routes()
-	err := r.Run("0.0.0.0:" + os.Getenv("HTTP_PORT"))
-	if err != nil {
-		global.AppLogger.Fatal("Failed to start server", zap.Error(err))
-		return
-	}
+	router.InitRouter()
 }

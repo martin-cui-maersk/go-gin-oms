@@ -27,5 +27,6 @@ go.work.sum
 
 # node_modules
 frontend/node_modules
+
+# for mac
 .DS_Store
-/logs/

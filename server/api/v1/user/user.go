@@ -1,7 +1,6 @@
 package user
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"go-gin-oms/server/models"
 	"go-gin-oms/server/utils/result"
@@ -127,7 +126,6 @@ func GetMyMenuList(c *gin.Context) {
 		result.Response().SetCode(503).SetMsg(err.Error()).SetData(nil).Build(c)
 		return
 	}
-	fmt.Println("RoleId", userInfo.RoleId)
 	results := models.GetRoleMenu(userInfo.RoleId)
 	result.Response().SetData(results).Build(c)
 }

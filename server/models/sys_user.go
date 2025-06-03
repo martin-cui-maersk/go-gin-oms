@@ -1,7 +1,6 @@
 package models
 
 import (
-	"encoding/json"
 	"errors"
 	"fmt"
 	"go-gin-oms/server/global"
@@ -114,14 +113,14 @@ type MenuData struct {
 	MenuTitle         string `json:"menuTitle"`
 	CurrentActiveMenu string `json:"currentActiveMenu"`
 	// tree data
-	Type      uint       `json:"type"`
-	MenuName  string     `json:"menuName"`
-	Name      string     `json:"name"`
-	Path      string     `json:"path"`
-	Component string     `json:"component"`
-	Redirect  string     `json:"redirect"`
-	Meta      MenuMeta   `json:"meta"`
-	Children  []MenuData `json:"children"`
+	Type      uint        `json:"type"`
+	MenuName  string      `json:"menuName"`
+	Name      string      `json:"name"`
+	Path      string      `json:"path"`
+	Component string      `json:"component"`
+	Redirect  string      `json:"redirect"`
+	Meta      MenuMeta    `json:"meta"`
+	Children  []*MenuData `json:"children"`
 }
 type MenuMeta struct {
 	Title             string `json:"title"`
@@ -132,7 +131,7 @@ type MenuMeta struct {
 	CurrentActiveMenu string `json:"currentActiveMenu"`
 }
 
-func GetRoleMenu(roleId uint) []MenuData {
+func GetRoleMenu(roleId uint) []*MenuData {
 	//var menuData []SysRoleMenu
 	//result := DB.Find(&menuData, "role_id = ?", roleId)
 	//// 检查错误
@@ -156,14 +155,14 @@ func GetRoleMenu(roleId uint) []MenuData {
 	if err.Error != nil {
 		panic("查询失败: " + err.Error.Error())
 	}
-	return handleMenuTree(roleMenuData)
+	return handleMenu(roleMenuData)
 }
 
 // getParentMenuIds 根据菜单ID查找出所有的父级菜单ID
 func getParentMenuIds(selectedRoleMenuIds []uint) []uint {
 	var allMenuIds []uint
 	var result []map[string]interface{}
-	err := global.DB.Model(&SysMenu{}).Where("menu_id in ?", selectedRoleMenuIds).Select("menu_id", "parent_id").Find(&result)
+	err := global.DB.Model(&SysMenu{}).Where("menu_id in ?", selectedRoleMenuIds).Select("menu_id", "parent_id").Order("sort desc").Find(&result)
 	if err.Error != nil {
 		panic("查询失败: " + err.Error.Error())
 	}
@@ -182,10 +181,8 @@ func getParentMenuIds(selectedRoleMenuIds []uint) []uint {
 	return allMenuIds
 }
 
-// handleMenuTree 将菜单处理成树结构
-func handleMenuTree(roleMenuData []SysMenu) []MenuData {
-	//var menuData []MenuData
-	var menus []MenuData
+// handleMenu 将菜单处理成树结构
+func handleMenu(roleMenuData []SysMenu) []*MenuData {
 	menuData := make(map[uint]*MenuData)
 	for _, row := range roleMenuData {
 		//fmt.Println(row.MenuName)
@@ -213,23 +210,28 @@ func handleMenuTree(roleMenuData []SysMenu) []MenuData {
 		//	Meta: MenuMeta{Title: row.MetaTitle, Icon: row.MetaIcon, HideBreadcrumb: false, IgnoreKeepAlive: false,
 		//		HideMenu: row.HideMenu == 1, CurrentActiveMenu: row.MetaCurrentActiveMenu}})
 	}
-	jsonBytes, err := json.Marshal(menuData)
-	if err != nil {
-		return nil
-	}
-	// 将字节切片转为字符串输出
-	jsonStr := string(jsonBytes)
-	fmt.Println(jsonStr)
-	for menuId, row := range menuData {
-		// fmt.Println(menuId, row.MenuName)
-		// 检查是否存在
-		if _, exists := menuData[row.ParentId]; exists {
-			// fmt.Printf("ParentId %d 存在，菜单名称: %s\n", row.ParentId, a.Name)
-			menuData[row.ParentId].Children = append(menuData[row.ParentId].Children, *menuData[menuId])
-		} else {
-			// fmt.Printf("ParentId %d 不存在\n", row.ParentId)
-			menus = append(menus, *menuData[menuId])
+	//jsonBytes, err := json.Marshal(menuData)
+	//if err != nil {
+	//	return nil
+	//}
+	//// 将字节切片转为字符串输出
+	//jsonStr := string(jsonBytes)
+	//global.AppLogger.Info(fmt.Sprintf("jsonStr %s", jsonStr))
+
+	return buildTree(menuData, 0)
+}
+
+// buildTree 构造树形菜单
+func buildTree(menuData map[uint]*MenuData, parentId uint) []*MenuData {
+	var tree []*MenuData
+	for _, row := range menuData {
+		if row.ParentId == parentId {
+			children := buildTree(menuData, row.Id)
+			if len(children) > 0 {
+				row.Children = children
+			}
+			tree = append(tree, row)
 		}
 	}
-	return menus
+	return tree
 }

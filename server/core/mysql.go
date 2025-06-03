@@ -17,6 +17,7 @@ func ConnectDB() *gorm.DB {
 	if err != nil {
 		global.AppLogger.Fatal("Error loading .env file. " + err.Error())
 		//log.Fatalf("Error loading .env file. %v\n", err)
+		return nil
 	}
 
 	DbHost := os.Getenv("DB_HOST")
@@ -38,6 +39,7 @@ func ConnectDB() *gorm.DB {
 	if err != nil {
 		global.AppLogger.Fatal("Error connecting to database. " + err.Error())
 		//log.Fatalf("Error connecting to database. %v\n", err)
+		return nil
 	}
 	// DB.AutoMigrate(&User{})
 	return DB
