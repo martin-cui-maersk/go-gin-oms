@@ -7,7 +7,7 @@ import (
 	"go-gin-oms/server/utils/result"
 )
 
-func GetRoleList(c *gin.Context) {
+func GetUserList(c *gin.Context) {
 	var err error
 	var exists bool
 	page, exists, err := utils.GetQueryInt(c, "page")
@@ -42,11 +42,7 @@ func GetRoleList(c *gin.Context) {
 		"roleCode": c.Query("roleCode"),
 		"status":   status,
 	}
-	total, list := models.GetRoleList(params)
+	total, list := models.GetUserList(params)
 	data := result.DataList{List: list, Total: total}
 	result.Response().SetData(data).Build(c)
 }
-
-func AddRole(c *gin.Context)       {}
-func UpdateRole(c *gin.Context)    {}
-func SetRoleStatus(c *gin.Context) {}

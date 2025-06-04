@@ -13,7 +13,7 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 		if err != nil {
 			//c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "Unauthorized"})
 			//c.Abort()
-			result.Response().SetCode(401).SetMsg("Unauthorized").SetData(nil).Build(c)
+			result.Response().SetCode(600).SetMsg("Unauthorized").SetData(nil).Build(c)
 			return
 		}
 		c.Next()

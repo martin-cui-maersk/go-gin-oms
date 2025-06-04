@@ -82,6 +82,7 @@ func Login(c *gin.Context) {
 	result.Response().SetData(map[string]string{"token": token}).Build(c)
 }
 
+// CurrentUserInfo 获取当前用户信息
 func CurrentUserInfo(c *gin.Context) {
 	// 从token中解析出user_id
 	userId, err := token.ExtractTokenID(c)
@@ -110,6 +111,7 @@ func CurrentUserInfo(c *gin.Context) {
 	result.Response().SetData(u).Build(c)
 }
 
+// GetMyMenuList 获取角色的菜单
 func GetMyMenuList(c *gin.Context) {
 	var err error
 	// 从token中解析出user_id
@@ -128,4 +130,9 @@ func GetMyMenuList(c *gin.Context) {
 	}
 	results := models.GetRoleMenu(userInfo.RoleId)
 	result.Response().SetData(results).Build(c)
+}
+
+// GetPermissionCode 获取角色的 Permission Code
+func GetPermissionCode(c *gin.Context) {
+	result.Response().SetCode(200).SetData(models.GetPermissionCode()).Build(c)
 }

@@ -14,13 +14,13 @@ import (
 )
 
 type SysUser struct {
-	//gorm.Model
 	UserId   uint   `gorm:"primaryKey;autoIncrement;comment:用户ID"  json:"userId"`
 	UserName string `json:"userName" gorm:"size:100;uniqueIndex:unique_index;comment:用户名"`
 	Password string `json:"-" gorm:"size:100;comment:密码"`
 	Salt     string `json:"salt" gorm:"size:100;comment:密码盐"`
 	Email    string `json:"email" gorm:"size:100;uniqueIndex:unique_index;comment:邮箱"`
 	RoleId   uint   `json:"roleId" gorm:"size:10;comment:角色ID"`
+	//Name     string `json:"name" gorm:"column:user_name;size:100;uniqueIndex:unique_index;comment:用户名"`
 	models.IsActive
 	models.ControlBy
 	models.ModelTime
@@ -85,6 +85,7 @@ func LoginCheck(username, password string) (string, error) {
 // PrepareGive 返回前将用户密码置空
 func (u *SysUser) PrepareGive() {
 	u.Password = ""
+	//u.Name = html.EscapeString(strings.TrimSpace(u.UserName))
 }
 
 // GetUserInfoByID 通过ID获取用户信息
@@ -234,4 +235,33 @@ func buildTree(menuData map[uint]*MenuData, parentId uint) []*MenuData {
 		}
 	}
 	return tree
+}
+
+// GetPermissionCode 获取角色的 Permission Code
+func GetPermissionCode() []string {
+	var permissionCode []string
+	global.DB.Model(&SysMenu{}).Where("is_active = ? and menu_type = ? and meta_permission <> ''", 1, 2).Pluck("meta_permission", &permissionCode)
+	return permissionCode
+}
+
+// GetUserList 获取用户列表
+func GetUserList(params map[string]interface{}) (int64, []SysUser) {
+	var result []SysUser
+	var count int64
+	page := params["page"].(int)
+	pageSize := params["pageSize"].(int)
+	offset := (page - 1) * pageSize
+	query := global.DB.Model(&SysUser{})
+	//if params["roleName"].(string) != "" {
+	//	query = query.Where("role_name like ?", "%"+params["roleName"].(string)+"%")
+	//}
+	//if params["roleCode"].(string) != "" {
+	//	query = query.Where("role_code like ?", "%"+params["roleCode"].(string)+"%")
+	//}
+	if params["status"].(int) > 0 {
+		query = query.Where("status = ?", params["status"])
+	}
+	// 先计数再查询
+	query.Count(&count).Limit(pageSize).Offset(offset).Order("user_id desc, update_at desc").Find(&result)
+	return count, result
 }

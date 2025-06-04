@@ -76,7 +76,7 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'roleNme',
+    field: 'roleName',
     label: t('system.role.roleName'),
     component: 'Input',
     colProps: { span: 8 },

@@ -21,6 +21,7 @@ import { AxiosRetry } from '@/utils/http/axios/axiosRetry';
 import axios from 'axios';
 import { h } from 'vue';
 import { useLocaleStoreWithOut } from '@/store/modules/locale';
+import {LoginStateEnum, useLoginState} from "@/views/basic/login/useLogin";
 
 const { createConfirm } = useMessage();
 
@@ -48,11 +49,12 @@ const transform: AxiosTransform = {
       return res.data;
     }
     // 错误的时候返回
-
+    // console.log('typeof response', typeof response);
     // const { response } = res;
     const response = res.data;
     console.log('transformResponseHook Response =>', response);
     if (!response) {
+      createMessage.error(t('basic.api.apiRequestFailed'));
       // return '[HTTP] Request has no return value';
       throw new Error(t('basic.api.apiRequestFailed'));
     }
@@ -74,7 +76,7 @@ const transform: AxiosTransform = {
       } else if (options.successMessageMode === 'message') {
         createMessage.success(successMsg);
       }
-      console.log('transformResponseHook hasSuccess Return => ', data);
+      // console.log('transformResponseHook hasSuccess Return => ', data);
       return Object.keys(data).length === 0 && data.constructor === Object ? true : data;
     }
 
@@ -88,18 +90,38 @@ const transform: AxiosTransform = {
         // 被动登出，带redirect地址
         userStore.logout(false);
         break;
+      case ResultEnum.LOGIN_FAILED: // 登录失败
+        createMessage.error(t('basic.login.loginFailed'));
+        break;
       case ResultEnum.SYS_ERROR: // code = 500 系统异常
         const error500 = sessionStorage.getItem('error500');
         if (error500 === null) {
-          createErrorModal({ title: t('basic.api.errorTip'), content: t('basic.api.errMsg500') });
+          // createErrorModal({ title: t('basic.api.errorTip'), content: t('basic.api.errMsg500') });
           sessionStorage.setItem('error500', String(1));
+          setTimeout(() => {
+            sessionStorage.removeItem('error500');
+          }, 3000);
+          createConfirm({
+            iconType: 'warning',
+            okCancel: false,
+            title: () => h('span', t('basic.api.errorTip')),
+            content: () => h('span', t('basic.api.errMsg500')),
+            onOk: async () => {
+              sessionStorage.removeItem('error500');
+            },
+          });
+        } else {
           setTimeout(() => {
             sessionStorage.removeItem('error500');
           }, 3000);
         }
         break;
       case ResultEnum.ERROR: // code = 503 业务接口异常
-        createMessage.error(msg);
+        if (options.errorMessageMode === 'modal') {
+          createErrorModal({ title: t('basic.api.errorTip'), content: msg });
+        } else if (options.errorMessageMode === 'message') {
+          createMessage.error(msg);
+        }
         break;
       case ResultEnum.API_NO_PERMISSION: // code = 401 接口无权限
         const error401 = sessionStorage.getItem('error401');
@@ -108,7 +130,7 @@ const transform: AxiosTransform = {
           sessionStorage.setItem('error401', String(1));
           setTimeout(() => {
             sessionStorage.removeItem('error401');
-          }, 3000);
+          }, 2000);
         }
         break;
       case ResultEnum.INVALID_MERCHANT: // code = 601 绑定的商户异常
@@ -133,6 +155,43 @@ const transform: AxiosTransform = {
           const userStore = useUserStoreWithOut();
           userStore.redirectLogin();
         }
+        break;
+      case ResultEnum.LOGIN_FAILED_WITH_INITIAL_PASSWORD: // code = 604 初始密码登录，强制跳转修改密码
+        createConfirm({
+          iconType: 'warning',
+          okCancel: false,
+          title: () => h('span', t('global.reminder')),
+          content: () => h('span', t('basic.login.initialPasswordError')),
+          onOk: async () => {
+            // TODO::
+            const { setLoginState } = useLoginState();
+            setLoginState(LoginStateEnum.CHANGE_INITIAL_PASSWORD);
+          },
+        });
+        break;
+      case ResultEnum.LOGIN_FAILED_WITH_EXPIRED_PASSWORD: // code = 605 密码过期，强制跳转修改密码
+        createConfirm({
+          iconType: 'warning',
+          okCancel: false,
+          title: () => h('span', t('global.reminder')),
+          content: () => h('span', t('basic.login.expiredPasswordError')),
+          onOk: async () => {
+            // TODO::
+            const { setLoginState } = useLoginState();
+            setLoginState(LoginStateEnum.CHANGE_INITIAL_PASSWORD);
+          },
+        });
+        break;
+      case ResultEnum.LOCKED_ACCOUNT: // code = 606 账号被锁定
+        createConfirm({
+          iconType: 'warning',
+          okCancel: false,
+          title: () => h('span', t('global.reminder')),
+          content: () => h('span', t('basic.login.lockedError')),
+          onOk: async () => {
+            // TODO::
+          },
+        });
         break;
       default:
         if (options.errorMessageMode === 'modal') {
@@ -167,6 +226,7 @@ const transform: AxiosTransform = {
       config.url !== '/user/reset-verification-code' &&
       config.url !== '/user/verify-reset-verification-code' &&
       config.url !== '/user/submit-reset-password' &&
+      config.url !== '/user/login-verify' &&
       loginExpired !== null
     ) {
       const userStore = useUserStoreWithOut();
@@ -242,6 +302,7 @@ const transform: AxiosTransform = {
     const localeStore = useLocaleStoreWithOut();
     // console.log(localeStore.getTimeZone);
     config.headers.TimeZone = localeStore.getTimeZone;
+    config.headers.Lang = localeStore.getLocale;
 
     return config;
   },
@@ -321,7 +382,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         // authentication schemes，e.g: Bearer
         // authenticationScheme: 'Bearer',
         authenticationScheme: '',
-        timeout: 10 * 1000,
+        timeout: 30 * 1000,
         // 基础接口地址
         // baseURL: globSetting.apiUrl,
 

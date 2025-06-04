@@ -65,3 +65,8 @@ func (b *Builder) Build(ctx *gin.Context) {
 //	r.Ctx.JSON(http.StatusOK, res)
 //	r.Ctx.Abort()
 //}
+
+type DataList struct {
+	List  interface{} `json:"list"`
+	Total int64       `json:"total"`
+}

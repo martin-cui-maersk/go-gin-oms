@@ -25,13 +25,16 @@ func (s *AppRouteV1) InitOmsAppRouter(r *gin.Engine) {
 	userGroup := omsAppRouterGroup.Group("/user")
 	{
 		userGroup.GET("/info", user.CurrentUserInfo)
-		userGroup.GET("/permission-code", user.CurrentUserInfo)
+		userGroup.GET("/permission-code", user.GetPermissionCode)
 		userGroup.GET("/menu-list", user.GetMyMenuList)
 	}
 
 	// 系统路由
 	systemGroup := omsAppRouterGroup.Group("/system")
 	{
+		// user
+		systemGroup.GET("/user-list", system.GetUserList)
+
 		// role
 		systemGroup.GET("/role-list", system.GetRoleList)
 		systemGroup.POST("/add-role", system.AddRole)
