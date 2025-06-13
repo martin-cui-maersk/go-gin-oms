@@ -2,7 +2,7 @@ package token
 
 import (
 	"fmt"
-	"os"
+	"github.com/martin-cui-maersk/go-gin-oms/global"
 	"strconv"
 	"strings"
 	"time"
@@ -11,13 +11,15 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
+// GenerateToken 生成token
 func GenerateToken(userId uint) (string, error) {
-	ttl, err := strconv.Atoi(os.Getenv("JWT_TTL"))
-	if err != nil {
-		return "", err
-	}
-	iss := os.Getenv("JWT_ISS")
-	sub := os.Getenv("JWT_SUB")
+	// ttl, err := strconv.Atoi(os.Getenv("JWT_TTL"))
+	// if err != nil {
+	//	return "", err
+	// }
+	ttl := global.Server.JWT.ExpiresTime
+	iss := global.Server.JWT.Iss
+	sub := global.Server.JWT.Sub
 
 	claims := jwt.MapClaims{}
 	claims["iss"] = iss
@@ -29,7 +31,7 @@ func GenerateToken(userId uint) (string, error) {
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
 
-	return token.SignedString([]byte(os.Getenv("JWT_SECRET")))
+	return token.SignedString([]byte(global.Server.JWT.Secret))
 }
 
 // CheckTokenValid 检查token是否有效
@@ -39,7 +41,7 @@ func CheckTokenValid(c *gin.Context) error {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("JWT_SECRET")), nil
+		return []byte(global.Server.JWT.Secret), nil
 	})
 	if err != nil {
 		return err
@@ -64,7 +66,7 @@ func ExtractTokenID(c *gin.Context) (uint, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
-		return []byte(os.Getenv("JWT_SECRET")), nil
+		return []byte(global.Server.JWT.Secret), nil
 	})
 	if err != nil {
 		return 0, err
