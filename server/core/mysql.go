@@ -5,13 +5,12 @@ import (
 	"github.com/martin-cui-maersk/go-gin-oms/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"log"
 )
 
 //var DB *gorm.DB
 
-// ConnectDB 连接数据库
-func ConnectDB() *gorm.DB {
+// DB 连接数据库
+func DB() *gorm.DB {
 	//err := godotenv.Load(".env")
 	//if err != nil {
 	//	global.AppLogger.Fatal("Error loading .env file. " + err.Error())
@@ -42,9 +41,8 @@ func ConnectDB() *gorm.DB {
 		SkipInitializeWithVersion: false, // 根据当前 MySQL 版本自动配置
 	}), &gorm.Config{})
 	if err != nil {
-		global.AppLogger.Fatal("Error connecting to database. " + err.Error())
-		log.Fatalf("Error connecting to database. %v\n", err)
-		return nil
+		global.AppLogger.Fatal(fmt.Sprintf("error connecting to database. %s", err.Error()))
+		panic(fmt.Errorf("error connecting to database, %w", err))
 	}
 	// DB.AutoMigrate(&User{})
 	return DB

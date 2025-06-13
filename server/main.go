@@ -12,9 +12,9 @@ func init() {
 	// 初始化日志
 	global.AccessLogger, global.AppLogger = core.InitLogger()
 	// 初始化数据库
-	global.DB = core.ConnectDB()
+	global.DB = core.DB()
 	// 初始化Redis
-	// TODO::初始化Redis
+	global.Redis = core.Redis()
 }
 
 func main() {

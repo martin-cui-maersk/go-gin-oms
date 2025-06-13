@@ -7,10 +7,27 @@
 ## 配置文件
 
 ```sh
-# 默认使用gin的debug模式 修改对应配置
-config.debug.yaml
-config.test.yaml
-config.release.yaml
+version: "1.0.0"    # app version
+port: 8080          # gin port
+
+jwt:
+  secret: "du2wzMWk0qpT6eBhXGnoOeQDjiqZkr16abxUdxDr62R3QJw3uCUsoQD8C1szpT8i"
+  iss: "jwt example"
+  sub: "xxx.abc.com"
+  ttl: 7200         # jwt超时时间 单位为秒
+
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "Martin19920910"
+  database: "oms"
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  password: ""
+  database: 2
 ```
 
 
@@ -70,8 +87,13 @@ server
 ## 运行
 
 ```sh
-go run main.go # 等于 go run main.go -m=test 默认使用配置文件 config.debug.yaml
-go run main.go -m=test # 使用配置文件 config.test.yaml
-go run main.go -m=release # 使用配置文件 config.release.yaml
+# 等于 go run main.go -m=debug 使用配置文件 config.debug.yaml
+go run main.go
+
+# 使用配置文件 config.test.yaml
+go run main.go -m=test
+
+# 使用配置文件 config.release.yaml
+go run main.go -m=release
 ```
 
