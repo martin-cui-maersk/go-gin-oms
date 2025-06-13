@@ -1,7 +1,7 @@
 package models
 
 import (
-	models "go-gin-oms/server/models/common"
+	models "github.com/martin-cui-maersk/go-gin-oms/models/common"
 )
 
 type SysMenu struct {

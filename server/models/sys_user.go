@@ -3,9 +3,9 @@ package models
 import (
 	"errors"
 	"fmt"
-	"go-gin-oms/server/global"
-	models "go-gin-oms/server/models/common"
-	"go-gin-oms/server/utils/token"
+	"github.com/martin-cui-maersk/go-gin-oms/global"
+	models "github.com/martin-cui-maersk/go-gin-oms/models/common"
+	"github.com/martin-cui-maersk/go-gin-oms/utils/token"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 	"html"
@@ -29,6 +29,17 @@ type SysUser struct {
 // TableName 添加表前缀
 func (*SysUser) TableName() string {
 	return "oms_sys_user"
+}
+
+// AfterFind 钩子会在查询完成后自动调用
+func (u *SysUser) AfterFind(tx *gorm.DB) (err error) {
+	// 将 int64 时间戳转换为 time.Time
+	//t1 := time.Unix(s.CreateAt/1000, 0)
+	//t2 := time.Unix(s.UpdateAt/1000, 0)
+	// 格式化为 YYYY-MM-DD HH:MM:SS
+	u.FormattedCreatedAt = models.FormatUnixTime(u.CreateAt)
+	u.FormattedUpdatedAt = models.FormatUnixTime(u.UpdateAt)
+	return nil
 }
 
 func (u *SysUser) SaveUser() (*SysUser, error) {
@@ -244,24 +255,54 @@ func GetPermissionCode() []string {
 	return permissionCode
 }
 
+type userList struct {
+	Id       uint   `gorm:"column:user_id;primaryKey;autoIncrement;comment:用户ID"  json:"id"`
+	Name     string `json:"name" gorm:"column:user_name;size:100;uniqueIndex:unique_index;comment:用户名"`
+	Email    string `json:"email" gorm:"size:100;uniqueIndex:unique_index;comment:邮箱"`
+	Status   uint8  `json:"status" gorm:"size:10;comment:状态"`
+	RoleId   uint   `json:"roleId" gorm:"size:10;comment:角色ID"`
+	RoleName string `json:"roleName" gorm:"size:100;comment:角色名称"`
+	Remarks  string `json:"remarks" gorm:"size:500;comment:备注"`
+	models.IsActive
+	models.ModelTime
+}
+
 // GetUserList 获取用户列表
-func GetUserList(params map[string]interface{}) (int64, []SysUser) {
-	var result []SysUser
+func GetUserList(params map[string]interface{}) (int64, []userList) {
+	var result []userList
 	var count int64
 	page := params["page"].(int)
 	pageSize := params["pageSize"].(int)
 	offset := (page - 1) * pageSize
-	query := global.DB.Model(&SysUser{})
-	//if params["roleName"].(string) != "" {
-	//	query = query.Where("role_name like ?", "%"+params["roleName"].(string)+"%")
-	//}
-	//if params["roleCode"].(string) != "" {
-	//	query = query.Where("role_code like ?", "%"+params["roleCode"].(string)+"%")
-	//}
+	query := global.DB.Model(&SysUser{}).Select("oms_sys_user.*, oms_sys_role.role_name").Joins("join oms_sys_role on oms_sys_role.role_id = oms_sys_user.role_id").Find(&userList{})
+	if params["userName"].(string) != "" {
+		query = query.Where("oms_sys_user.user_name like ?", "%"+params["userName"].(string)+"%")
+	}
+	if params["email"].(string) != "" {
+		query = query.Where("oms_sys_user.email like ?", "%"+params["email"].(string)+"%")
+	}
 	if params["status"].(int) > 0 {
-		query = query.Where("status = ?", params["status"])
+		query = query.Where("oms_sys_user.status = ?", params["status"])
+	}
+	if params["roleId"].(int) > 0 {
+		query = query.Where("oms_sys_role.role_id = ?", params["roleId"])
 	}
 	// 先计数再查询
-	query.Count(&count).Limit(pageSize).Offset(offset).Order("user_id desc, update_at desc").Find(&result)
+	query.Count(&count).Limit(pageSize).Offset(offset).Order("oms_sys_user.user_id desc, oms_sys_user.update_at desc").Find(&result)
+	for i, v := range result {
+		result[i].FormattedCreatedAt = models.FormatUnixTime(v.CreateAt)
+		result[i].FormattedUpdatedAt = models.FormatUnixTime(v.UpdateAt)
+	}
 	return count, result
+}
+
+type roleList struct {
+	Value uint8  `gorm:"column:role_id;primaryKey;autoIncrement;comment:角色ID" json:"value"`
+	Label string `gorm:"column:role_name;comment:角色名称" json:"label"`
+}
+
+func GetRoleSelect() []roleList {
+	var result []roleList
+	global.DB.Model(&SysRole{}).Where("is_active = 1").Find(&result)
+	return result
 }

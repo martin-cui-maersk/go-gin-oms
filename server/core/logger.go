@@ -2,7 +2,7 @@ package core
 
 import (
 	"fmt"
-	"go-gin-oms/server/config"
+	"github.com/martin-cui-maersk/go-gin-oms/config"
 	"go.uber.org/zap"
 	"time"
 )

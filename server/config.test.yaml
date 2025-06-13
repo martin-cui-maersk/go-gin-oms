@@ -1,0 +1,21 @@
+version: "1.0.0"
+port: 8080
+
+jwt:
+  secret: "du2wzMWk0qpT6eBhXGnoOeQDjiqZkr16abxUdxDr62R3QJw3uCUsoQD8C1szpT8i"
+  iss: "jwt example"
+  sub: "xxx.abc.com"
+  ttl: 7200
+
+mysql:
+  host: "127.0.0.1"
+  port: 3306
+  user: "root"
+  password: "Martin19920910"
+  database: "oms"
+
+redis:
+  host: "127.0.0.1"
+  port: 6379
+  password: ""
+  database: 2

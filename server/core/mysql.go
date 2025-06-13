@@ -2,31 +2,36 @@ package core
 
 import (
 	"fmt"
-	"github.com/joho/godotenv"
-	"go-gin-oms/server/global"
+	"github.com/martin-cui-maersk/go-gin-oms/global"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"os"
+	"log"
 )
 
 //var DB *gorm.DB
 
 // ConnectDB 连接数据库
 func ConnectDB() *gorm.DB {
-	err := godotenv.Load(".env")
-	if err != nil {
-		global.AppLogger.Fatal("Error loading .env file. " + err.Error())
-		//log.Fatalf("Error loading .env file. %v\n", err)
-		return nil
-	}
+	//err := godotenv.Load(".env")
+	//if err != nil {
+	//	global.AppLogger.Fatal("Error loading .env file. " + err.Error())
+	//	log.Fatalf("Error loading .env file. %v\n", err)
+	//	return nil
+	//}
+	//
+	//DbHost := os.Getenv("DB_HOST")
+	//DbPort := os.Getenv("DB_PORT")
+	//DbUser := os.Getenv("DB_USER")
+	//DbPass := os.Getenv("DB_PASS")
+	//DbName := os.Getenv("DB_NAME")
 
-	DbHost := os.Getenv("DB_HOST")
-	DbPort := os.Getenv("DB_PORT")
-	DbUser := os.Getenv("DB_USER")
-	DbPass := os.Getenv("DB_PASS")
-	DbName := os.Getenv("DB_NAME")
+	DbHost := global.Server.MySQL.Host
+	DbPort := global.Server.MySQL.Port
+	DbUser := global.Server.MySQL.User
+	DbPass := global.Server.MySQL.Password
+	DbName := global.Server.MySQL.Database
 
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local", DbUser, DbPass, DbHost, DbPort, DbName)
+	dsn := fmt.Sprintf("%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local", DbUser, DbPass, DbHost, DbPort, DbName)
 	// DB, err := gorm.Open... := 对全局变量赋值会是nil，外部调用 ConnectDB 的时候，使用:=，DB是局部变量
 	DB, err := gorm.Open(mysql.New(mysql.Config{
 		DSN:                       dsn,   // DSN data source name
@@ -38,7 +43,7 @@ func ConnectDB() *gorm.DB {
 	}), &gorm.Config{})
 	if err != nil {
 		global.AppLogger.Fatal("Error connecting to database. " + err.Error())
-		//log.Fatalf("Error connecting to database. %v\n", err)
+		log.Fatalf("Error connecting to database. %v\n", err)
 		return nil
 	}
 	// DB.AutoMigrate(&User{})

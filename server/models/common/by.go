@@ -35,6 +35,7 @@ type ModelTime struct {
 	FormattedUpdatedAt string `gorm:"-" json:"updateTime"` // 格式化后的时间字符串
 }
 
+// FormatUnixTime 格式时间
 func FormatUnixTime(t int64) string {
 	if t == 0 {
 		return ""
@@ -46,6 +47,7 @@ func FormatUnixTime(t int64) string {
 	return time.Unix(t, 0).Format("2006-01-02 15:04:05")
 }
 
+// Int64Length 判断int长度，13位的则位毫秒级时间戳
 func Int64Length(n int64) int {
 	if n == 0 {
 		return 1 // 0 算作 1 位数

@@ -2,9 +2,9 @@ package system
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-gin-oms/server/models"
-	"go-gin-oms/server/utils"
-	"go-gin-oms/server/utils/result"
+	"github.com/martin-cui-maersk/go-gin-oms/models"
+	"github.com/martin-cui-maersk/go-gin-oms/utils"
+	"github.com/martin-cui-maersk/go-gin-oms/utils/result"
 )
 
 func GetRoleList(c *gin.Context) {

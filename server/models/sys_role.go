@@ -1,8 +1,8 @@
 package models
 
 import (
-	"go-gin-oms/server/global"
-	models "go-gin-oms/server/models/common"
+	"github.com/martin-cui-maersk/go-gin-oms/global"
+	models "github.com/martin-cui-maersk/go-gin-oms/models/common"
 	"gorm.io/gorm"
 )
 
@@ -33,7 +33,6 @@ func (s *SysRole) AfterFind(tx *gorm.DB) (err error) {
 	s.FormattedCreatedAt = models.FormatUnixTime(s.CreateAt)
 	s.FormattedUpdatedAt = models.FormatUnixTime(s.UpdateAt)
 	return nil
-
 }
 
 // GetRoleList 获取角色列表

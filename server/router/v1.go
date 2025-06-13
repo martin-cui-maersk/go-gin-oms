@@ -2,9 +2,10 @@ package router
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-gin-oms/server/api/v1/system"
-	"go-gin-oms/server/api/v1/user"
-	"go-gin-oms/server/middleware"
+	"github.com/martin-cui-maersk/go-gin-oms/api/v1/system"
+	"github.com/martin-cui-maersk/go-gin-oms/api/v1/user"
+	"github.com/martin-cui-maersk/go-gin-oms/global"
+	"github.com/martin-cui-maersk/go-gin-oms/middleware"
 )
 
 type AppRouteV1 struct {
@@ -13,10 +14,14 @@ type AppRouteV1 struct {
 
 // InitOmsAppRouter V1路由
 func (s *AppRouteV1) InitOmsAppRouter(r *gin.Engine) {
+	// prefix
 	omsAppRouterGroup := r.Group(s.prefix)
 
 	// 登录路由 public权限
 	omsAppRouterGroup.POST("/user/login", user.Login)
+	omsAppRouterGroup.GET("/version", func(c *gin.Context) {
+		c.JSON(200, global.Server)
+	})
 
 	// jwt中间件
 	omsAppRouterGroup.Use(middleware.JwtAuthMiddleware())
@@ -34,6 +39,7 @@ func (s *AppRouteV1) InitOmsAppRouter(r *gin.Engine) {
 	{
 		// user
 		systemGroup.GET("/user-list", system.GetUserList)
+		systemGroup.GET("/role-ids", system.GetRoleSelect)
 
 		// role
 		systemGroup.GET("/role-list", system.GetRoleList)

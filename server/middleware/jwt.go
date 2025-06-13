@@ -2,8 +2,8 @@ package middleware
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-gin-oms/server/utils/result"
-	"go-gin-oms/server/utils/token"
+	"github.com/martin-cui-maersk/go-gin-oms/utils/result"
+	"github.com/martin-cui-maersk/go-gin-oms/utils/token"
 )
 
 // JwtAuthMiddleware JWT中间件
@@ -13,7 +13,7 @@ func JwtAuthMiddleware() gin.HandlerFunc {
 		if err != nil {
 			//c.JSON(http.StatusUnauthorized, gin.H{"code": 401, "msg": "Unauthorized"})
 			//c.Abort()
-			result.Response().SetCode(600).SetMsg("Unauthorized").SetData(nil).Build(c)
+			result.Response().SetCode(600).SetMsg("Token expired, please login").SetData(nil).Build(c)
 			return
 		}
 		c.Next()

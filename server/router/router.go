@@ -2,12 +2,12 @@ package router
 
 import (
 	"fmt"
+	"github.com/fvbock/endless"
 	"github.com/gin-gonic/gin"
-	"go-gin-oms/server/global"
-	"go-gin-oms/server/middleware"
+	"github.com/martin-cui-maersk/go-gin-oms/global"
+	"github.com/martin-cui-maersk/go-gin-oms/middleware"
 	"go.uber.org/zap"
 	"net/http"
-	"os"
 	"runtime/debug"
 	"time"
 )
@@ -45,7 +45,13 @@ func InitRouter() {
 		v2Route.InitOmsAppRouter(r)                       // 调用方法
 	}
 
-	err := r.Run(fmt.Sprintf(":%s", os.Getenv("HTTP_PORT")))
+	//err := r.Run(fmt.Sprintf(":%s", global.Server.Port))
+	//if err != nil {
+	//	global.AppLogger.Fatal("Failed to start server", zap.Error(err))
+	//}
+
+	// 使用 endless 监听端口
+	err := endless.ListenAndServe(":"+global.Server.Port, r)
 	if err != nil {
 		global.AppLogger.Fatal("Failed to start server", zap.Error(err))
 	}

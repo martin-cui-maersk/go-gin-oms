@@ -1,12 +1,14 @@
 package main
 
 import (
-	"go-gin-oms/server/core"
-	"go-gin-oms/server/global"
-	"go-gin-oms/server/router"
+	"github.com/martin-cui-maersk/go-gin-oms/core"
+	"github.com/martin-cui-maersk/go-gin-oms/global"
+	"github.com/martin-cui-maersk/go-gin-oms/router"
 )
 
 func init() {
+	// 初始化配置
+	global.Config = core.Viper()
 	// 初始化日志
 	global.AccessLogger, global.AppLogger = core.InitLogger()
 	// 初始化数据库

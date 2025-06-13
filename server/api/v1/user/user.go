@@ -2,9 +2,9 @@ package user
 
 import (
 	"github.com/gin-gonic/gin"
-	"go-gin-oms/server/models"
-	"go-gin-oms/server/utils/result"
-	"go-gin-oms/server/utils/token"
+	"github.com/martin-cui-maersk/go-gin-oms/models"
+	"github.com/martin-cui-maersk/go-gin-oms/utils/result"
+	"github.com/martin-cui-maersk/go-gin-oms/utils/token"
 )
 
 // ReqRegister /api/register的请求体
